@@ -1,0 +1,38 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - /home/system/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    environment:
+      - TZ=Asia/Jerusalem
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8123 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:2.0
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - /home/system/homeassistant/mqtt/config:/mosquitto/config
+      - /home/system/homeassistant/mqtt/data:/mosquitto/data
+      - /home/system/homeassistant/mqtt/log:/mosquitto/log
+    environment:
+      - TZ=Asia/Jerusalem
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t \\$SYS/health -C 1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+

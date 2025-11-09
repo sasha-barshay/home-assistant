@@ -1,0 +1,41 @@
+# Home Assistant Project - Git Ignore
+
+# Sensitive configuration files
+**/passwd
+**/secrets.yaml
+**/.storage/
+**/secrets/
+
+# Backup files
+backups/
+*.tar.gz
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# Docker volumes (local data)
+# Note: docker-compose.yml is tracked, but actual volume data is not
+
+# Environment-specific files
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+
