@@ -1,0 +1,32 @@
+# Home Assistant Notification Configuration
+# Mobile App + Telegram Bot Setup (NafanyaBot)
+# Location: /home/system/homeassistant/config/notification_config.yaml
+# Include in configuration.yaml: notification_config: !include notification_config.yaml
+
+# ============================================================================
+# TELEGRAM BOT CONFIGURATION (NafanyaBot)
+# ============================================================================
+telegram_bot:
+  - platform: polling
+    api_key: "8375553299:AAG7tKD2JmXMSL7-Eh-r0ZHDwsdA8Z1i_wQ"
+    allowed_chat_ids:
+      - 439885937
+
+# ============================================================================
+# TELEGRAM NOTIFIER
+# ============================================================================
+notify:
+  - name: telegram_notifier
+    platform: telegram
+    chat_id: 439885937
+
+# ============================================================================
+# MULTI-CHANNEL NOTIFICATION GROUP
+# ============================================================================
+notify:
+  - name: multi_channel_alerts
+    platform: group
+    services:
+      - service: mobile_app_22071212ag
+      - service: telegram_notifier
+

@@ -1,0 +1,95 @@
+# System Monitoring Entities
+# Auto-generated template sensors for Home Assistant system health monitoring
+# Location: /home/system/homeassistant/config/system_monitoring.yaml
+# Include in configuration.yaml: system_monitoring: !include system_monitoring.yaml
+
+template:
+  - binary_sensor:
+      # Home Assistant Service Status
+      - name: "Home Assistant Status"
+        unique_id: "homeassistant_status"
+        state: >
+          {% set response = states('sensor.homeassistant_api_response') %}
+          {{ 'on' if response == 'ok' else 'off' }}
+        device_class: connectivity
+        icon: >
+          {% if is_state('binary_sensor.homeassistant_status', 'on') %}
+            mdi:home-assistant
+          {% else %}
+            mdi:home-assistant
+          {% endif %}
+
+      # Home Assistant Container Health
+      - name: "Home Assistant Container Health"
+        unique_id: "homeassistant_container_health"
+        state: >
+          {% set health = states('sensor.homeassistant_container_health_raw') %}
+          {{ 'on' if health in ['healthy', 'starting'] else 'off' }}
+        device_class: connectivity
+        icon: >
+          {% if is_state('binary_sensor.homeassistant_container_health', 'on') %}
+            mdi:docker
+          {% else %}
+            mdi:docker
+          {% endif %}
+
+      # Home Assistant API Available
+      - name: "Home Assistant API Available"
+        unique_id: "homeassistant_api_available"
+        state: >
+          {% set api_state = states('sensor.homeassistant_api_check') %}
+          {{ 'on' if api_state == 'available' else 'off' }}
+        device_class: connectivity
+        icon: mdi:api
+
+  - sensor:
+      # Home Assistant Uptime
+      - name: "Home Assistant Uptime"
+        unique_id: "homeassistant_uptime"
+        state: >
+          {% set start_time = now() - timedelta(seconds=states('sensor.homeassistant_uptime_seconds')|int(0)) %}
+          {{ (now() - start_time).total_seconds() | int }}
+        unit_of_measurement: "seconds"
+        icon: mdi:clock-outline
+
+      # Home Assistant API Response Check
+      - name: "Home Assistant API Response"
+        unique_id: "homeassistant_api_response"
+        state: >
+          {% set response = states('sensor.homeassistant_api_check') %}
+          {{ 'ok' if response == 'available' else 'error' }}
+        icon: mdi:api
+
+      # Home Assistant API Check (raw)
+      - name: "Home Assistant API Check"
+        unique_id: "homeassistant_api_check"
+        state: "available"
+        icon: mdi:api
+
+      # Container Health Raw (for template processing)
+      - name: "Home Assistant Container Health Raw"
+        unique_id: "homeassistant_container_health_raw"
+        state: "healthy"
+        icon: mdi:docker
+
+      # Uptime in seconds (for template processing)
+      - name: "Home Assistant Uptime Seconds"
+        unique_id: "homeassistant_uptime_seconds"
+        state: "0"
+        unit_of_measurement: "seconds"
+        icon: mdi:clock-outline
+
+# REST sensor for API availability check (updates every 60 seconds)
+rest:
+  - resource: "http://localhost:8123/api/"
+    scan_interval: 60
+    sensor:
+      - name: "HA API Status Check"
+        unique_id: "ha_api_status_check"
+        value_template: >
+          {% if value == 'API running.' %}
+            available
+          {% else %}
+            unavailable
+          {% endif %}
+        json_attributes_path: "$"

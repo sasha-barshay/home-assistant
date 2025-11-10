@@ -6,8 +6,8 @@ Home Assistant automation and control system running on Oslik server.
 
 This repository contains the configuration and management scripts for a self-hosted Home Assistant installation with MQTT broker support.
 
-**Server:** Oslik (`10.11.12.100`)  
-**Status:** ✅ Operational  
+**Server:** Oslik (`10.11.12.100`)
+**Status:** ✅ Operational
 **Access:** http://10.11.12.100:8123
 
 ## 🏗️ Architecture
@@ -25,8 +25,18 @@ This repository contains the configuration and management scripts for a self-hos
 ├── mosquitto.conf              # MQTT broker configuration
 ├── backup_homeassistant.sh     # Automated backup script
 ├── restore_homeassistant.sh    # Restore script
+├── ha_api.sh                   # Home Assistant API helper script
+├── test_ha_token.sh            # Token verification script
+├── push_to_github.sh           # Git push helper script
+├── .env                         # Environment variables (gitignored, contains API token)
 ├── PROJECT.md                  # Detailed project documentation
-└── METHODOLOGY.md              # Problem-solving methodology
+├── METHODOLOGY.md              # Problem-solving methodology
+└── alerts/                     # Alerting system (autonomous deployment)
+    ├── run_full_deployment.sh  # Master orchestration script
+    ├── auto_setup_telegram.sh  # Telegram bot setup
+    ├── discover_entities.sh    # Entity discovery
+    ├── deploy_alerts.sh        # Deployment script
+    └── *.yaml                  # Configuration files
 ```
 
 ## 🚀 Quick Start
@@ -66,6 +76,20 @@ This repository contains the configuration and management scripts for a self-hos
 5. Access Home Assistant:
    - Open http://10.11.12.100:8123
    - Complete initial setup wizard
+
+6. Configure API access (optional):
+   ```bash
+   # Create .env file with your Home Assistant token
+   # Get token from: http://10.11.12.100:8123 -> Profile -> Long-Lived Access Tokens
+   cat > .env << EOF
+   HA_TOKEN=your_token_here
+   HA_URL=http://10.11.12.100:8123
+   EOF
+   chmod 600 .env
+
+   # Test the token
+   ./test_ha_token.sh
+   ```
 
 ## 🔧 Configuration
 
@@ -120,6 +144,26 @@ Backups include:
 - ✅ **MQTT:** Mosquitto broker configured and running
 - ✅ **SkyConnect:** Zigbee coordinator validated (firmware 7.4.4.3)
 - ⏳ **ZHA:** Ready for configuration
+- ✅ **Alerting System:** Autonomous alerting with Telegram bot and mobile app notifications
+
+### Alerting System
+
+The project includes a fully autonomous alerting system located in the `alerts/` directory:
+
+- **Status:** ✅ Deployed and operational
+- **Telegram Bot:** NafanyaBot (`@Nafanya_HA_Bot`)
+- **Mobile App:** Automatic discovery and integration
+- **Entity Discovery:** Automatic discovery and categorization
+- **Alert Generation:** Automatic alert configuration generation
+- **System Monitoring:** Template sensors for system health
+
+**Quick Start:**
+```bash
+cd alerts
+./run_full_deployment.sh
+```
+
+See `alerts/README.md` for complete documentation.
 
 ### Planned Integrations
 
@@ -131,10 +175,52 @@ Backups include:
 - **PROJECT.md:** Complete project documentation including installation details, configuration, and status
 - **METHODOLOGY.md:** Universal problem-solving methodology for troubleshooting
 
+## 🔌 API Access
+
+### Home Assistant API
+
+The project includes helper scripts for interacting with the Home Assistant API:
+
+- **`ha_api.sh`** - Main API helper script for common operations
+- **`test_ha_token.sh`** - Verify API token validity
+
+**Setup:**
+1. Create a long-lived access token in Home Assistant:
+   - Go to http://10.11.12.100:8123
+   - Profile → Long-Lived Access Tokens → Create Token
+2. Store token in `.env` file (gitignored):
+   ```bash
+   echo "HA_TOKEN=your_token_here" > .env
+   echo "HA_URL=http://10.11.12.100:8123" >> .env
+   chmod 600 .env
+   ```
+
+**Usage Examples:**
+```bash
+# Test API connection
+./test_ha_token.sh
+
+# Get configuration
+./ha_api.sh config
+
+# List all entity states
+./ha_api.sh states
+
+# Get specific entity state
+./ha_api.sh states light.living_room
+
+# Call a service
+./ha_api.sh call-service light turn_on light.living_room
+
+# View help
+./ha_api.sh help
+```
+
 ## 🔒 Security Notes
 
 - MQTT authentication is enabled (no anonymous access)
 - All services run on local network (10.11.12.0/24)
+- API token stored in `.env` file (gitignored, not committed)
 - Consider firewall rules for exposed ports
 - Review exposed ports before exposing to internet
 
@@ -179,6 +265,7 @@ For complete server and network information, see:
 
 ---
 
-**Last Updated:** November 9, 2025  
+**Last Updated:** December 2024
 **Status:** ✅ Operational - Production ready
+**API Access:** ✅ Configured with long-lived access token
 

@@ -1,0 +1,212 @@
+# Home Assistant Automation-Based Alerts
+# System and Device Monitoring
+# Location: /home/system/homeassistant/config/automation_alerts.yaml
+# Include in configuration.yaml: automation_alerts: !include automation_alerts.yaml
+#
+# IMPORTANT: Replace 'mobile_app_22071212ag' with your actual mobile app notifier name
+# Find it via: Developer Tools → Services → notify.mobile_app_*
+
+automation:
+  # ============================================================================
+  # SYSTEM ALERTS
+  # ============================================================================
+  
+  # Home Assistant Service Down Alert
+  - alias: "Alert - Home Assistant Service Down"
+    id: alert_ha_service_down
+    description: "Critical alert when Home Assistant service is unavailable"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.homeassistant_status
+        to: "off"
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: binary_sensor.homeassistant_status
+        state: "off"
+    action:
+      - service: notify.mobile_app_22071212ag  # REPLACE with your device name
+        data:
+          title: "🚨 Home Assistant Service Down"
+          message: >
+            Home Assistant service has been offline for 2 minutes.
+            Please check the server immediately.
+          data:
+            priority: high
+            channel: "alerts"
+            actions:
+              - action: "ACK_HA_DOWN"
+                title: "Acknowledge"
+      - service: notify.telegram_notifier
+        data:
+          title: "🚨 Home Assistant Service Down"
+          message: >
+            Home Assistant service has been offline for 2 minutes.
+            Please check the server immediately.
+
+  # Docker Container Health Alert
+  - alias: "Alert - Home Assistant Container Unhealthy"
+    id: alert_ha_container_unhealthy
+    description: "Alert when Home Assistant container health check fails"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.homeassistant_container_health
+        to: "off"
+        for:
+          minutes: 3
+    action:
+      - service: notify.mobile_app_22071212ag  # REPLACE with your device name
+        data:
+          title: "⚠️ Container Health Issue"
+          message: >
+            Home Assistant container health check has been failing for 3 minutes.
+            Container may need restart.
+          data:
+            priority: high
+            channel: "alerts"
+      - service: notify.telegram_notifier
+        data:
+          title: "⚠️ Container Health Issue"
+          message: >
+            Home Assistant container health check has been failing for 3 minutes.
+            Container may need restart.
+
+  # System Resource Alert (if you have system monitor integration)
+  - alias: "Alert - High System Resource Usage"
+    id: alert_high_resource_usage
+    description: "Alert when system resources are critically high"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.system_cpu_usage  # Update if you have system monitoring
+        above: 90
+        for:
+          minutes: 5
+    action:
+      - service: notify.mobile_app_22071212ag  # REPLACE with your device name
+        data:
+          title: "⚠️ High CPU Usage"
+          message: >
+            System CPU usage is {{ states('sensor.system_cpu_usage') }}%
+            (Threshold: 90%)
+          data:
+            priority: normal
+      - service: notify.telegram_notifier
+        data:
+          title: "⚠️ High CPU Usage"
+          message: >
+            System CPU usage is {{ states('sensor.system_cpu_usage') }}%
+            (Threshold: 90%)
+
+  # ============================================================================
+  # DEVICE ALERTS
+  # ============================================================================
+  
+  # Device Offline Alert (Generic)
+  - alias: "Alert - Device Offline"
+    id: alert_device_offline
+    description: "Alert when a device goes offline"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.device_online  # Update with your device entity
+        to: "off"
+        for:
+          minutes: 3
+    action:
+      - service: notify.mobile_app_22071212ag  # REPLACE with your device name
+        data:
+          title: "⚠️ Device Offline"
+          message: >
+            Device "{{ trigger.to_state.attributes.friendly_name }}" 
+            has been offline for 3 minutes.
+          data:
+            priority: normal
+            channel: "alerts"
+      - service: notify.telegram_notifier
+        data:
+          title: "⚠️ Device Offline"
+          message: >
+            Device "{{ trigger.to_state.attributes.friendly_name }}" 
+            has been offline for 3 minutes.
+
+  # Sensor Offline Alert
+  - alias: "Alert - Sensor Offline"
+    id: alert_sensor_offline
+    description: "Alert when a sensor goes offline"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.sensor_online  # Update with your sensor entity
+        to: "off"
+        for:
+          minutes: 5
+    action:
+      - service: notify.mobile_app_22071212ag  # REPLACE with your device name
+        data:
+          title: "📡 Sensor Offline"
+          message: >
+            Sensor "{{ trigger.to_state.attributes.friendly_name }}" 
+            has been offline for 5 minutes.
+          data:
+            priority: normal
+      - service: notify.telegram_notifier
+        data:
+          title: "📡 Sensor Offline"
+          message: >
+            Sensor "{{ trigger.to_state.attributes.friendly_name }}" 
+            has been offline for 5 minutes.
+
+  # Device Unavailable Alert (for devices that become unavailable)
+  - alias: "Alert - Device Unavailable"
+    id: alert_device_unavailable
+    description: "Alert when device state becomes unavailable"
+    trigger:
+      - platform: state
+        entity_id: sensor.any_device  # Update with your device entity
+        to: "unavailable"
+        for:
+          minutes: 2
+    action:
+      - service: notify.mobile_app_22071212ag  # REPLACE with your device name
+        data:
+          title: "❌ Device Unavailable"
+          message: >
+            Device "{{ trigger.to_state.attributes.friendly_name }}" 
+            is unavailable. Check connectivity.
+          data:
+            priority: normal
+      - service: notify.telegram_notifier
+        data:
+          title: "❌ Device Unavailable"
+          message: >
+            Device "{{ trigger.to_state.attributes.friendly_name }}" 
+            is unavailable. Check connectivity.
+
+  # ============================================================================
+  # CUSTOM ALERTS
+  # ============================================================================
+  # Add your custom alert automations below
+  #
+  # Example: High Temperature Alert
+  # - alias: "Alert - High Temperature"
+  #   id: alert_high_temperature
+  #   description: "Alert when temperature exceeds threshold"
+  #   trigger:
+  #     - platform: numeric_state
+  #       entity_id: sensor.temperature  # Update with your sensor
+  #       above: 30
+  #       for:
+  #         minutes: 5
+  #   action:
+  #     - service: notify.mobile_app_22071212ag
+  #       data:
+  #         title: "🌡️ High Temperature"
+  #         message: >
+  #           Temperature is {{ states('sensor.temperature') }}°C
+  #           (Threshold: 30°C)
+  #     - service: notify.telegram_notifier
+  #       data:
+  #         title: "🌡️ High Temperature"
+  #         message: >
+  #           Temperature is {{ states('sensor.temperature') }}°C
+  #           (Threshold: 30°C)
+

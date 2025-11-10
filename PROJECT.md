@@ -87,6 +87,13 @@
 - **MQTT Password File:** `/home/system/homeassistant/mqtt/config/passwd`
 - **Backup Directory:** `/home/system/homeassistant/backups`
 
+### API Access
+- **Status:** ✅ **CONFIGURED**
+- **Token Storage:** `.env` file (gitignored, local repository)
+- **Helper Scripts:** `ha_api.sh` (API operations), `test_ha_token.sh` (token verification)
+- **Token Type:** Long-lived access token
+- **Access:** Token stored securely in `.env` file, not committed to repository
+
 ---
 
 ## 🔌 Integrations & Devices
@@ -209,6 +216,7 @@
    - ⏳ Document automation scripts
 
 4. **Security Configuration:**
+   - ✅ API token configured and stored securely (`.env` file, gitignored)
    - Configure firewall rules for Home Assistant ports
    - Set up secure authentication
    - Review exposed ports
@@ -249,8 +257,9 @@
 
 ---
 
-**Last Updated:** November 9, 2025
+**Last Updated:** December 2024
 **Status:** ✅ **INSTALLED AND OPERATIONAL** - Home Assistant running autonomously on Oslik
 **Project Status:** Active - Production ready, autonomous operation configured
 **Phase Status:** ✅ **SkyConnect Validation Complete** - Device validated, firmware verified, ready for ZHA setup
-**Server Access:** ⚠️ SSH currently not accessible (service down) - Server reachable via ping at 10.11.12.100
+**API Access:** ✅ **CONFIGURED** - Long-lived access token stored and verified
+**Server Access:** ✅ SSH accessible - Server reachable at 10.11.12.100

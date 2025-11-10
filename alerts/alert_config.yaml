@@ -1,0 +1,13 @@
+alert:
+  22071212ag_offline:
+    name: 22071212Ag Offline
+    done_message: 22071212Ag Back Online
+    entity_id: device_tracker.22071212ag
+    state: not_home
+    repeat: 30
+    can_acknowledge: true
+    skip_first: false
+    notifiers:
+    - telegram_notifier
+    - mobile_app_22071212ag
+

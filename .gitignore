@@ -38,4 +38,19 @@ Thumbs.db
 # Logs
 *.log
 logs/
+deployment.log
+
+# Generated files
+alerts/*.json
+alerts/deployment_summary.txt
+alerts/backups/
+alerts/*.template
+
+# Old/redundant scripts
+alerts/setup_telegram_bot.sh
+alerts/test_telegram_bot.sh
+alerts/test_alerts.sh
+alerts/generate_reports.sh
+alerts/verify_system_health.sh
+alerts/validate_yaml.sh
 
