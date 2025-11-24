@@ -1,0 +1,78 @@
+# Home Assistant Water Leak Sensor Automations
+# Sonoff SNZB-05P Zigbee Water Leak Sensors
+# Location: /home/system/homeassistant/config/water_leak_automations.yaml
+# Include in configuration.yaml as: automation: !include automations.yaml
+#
+# This file contains automations for water leak detection using Sonoff SNZB-05P sensors
+# All alerts are sent via Telegram using telegram_bot.send_message
+#
+# Entity naming pattern: binary_sensor.sonoff_waterleak<N> (N = 1, 2, 3, ...)
+# Battery entities: sensor.sonoff_waterleak<N>_battery
+
+# ============================================================================
+# WATER LEAK ALERT
+# ============================================================================
+
+- alias: "Water Leak Alert"
+  id: water_leak_alert
+  description: "Alert when water leak sensor detects water"
+  trigger:
+    - platform: state
+      entity_id: 
+        - binary_sensor.sonoff_waterleak1
+        - binary_sensor.leakd_window
+      to: 'on'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: |
+          🚨 Water Leak Detected!
+          
+          {{ trigger.to_state.attributes.friendly_name }}
+          Time: {{ now().strftime('%H:%M:%S') }}
+
+# ============================================================================
+# WATER LEAK CLEARED NOTIFICATION
+# ============================================================================
+
+- alias: "Water Leak Cleared"
+  id: water_leak_cleared
+  description: "Notification when water leak is cleared"
+  trigger:
+    - platform: state
+      entity_id: 
+        - binary_sensor.sonoff_waterleak1
+        - binary_sensor.leakd_window
+      to: 'off'
+      for:
+        seconds: 10
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: |
+          ✅ Water Leak Cleared
+          
+          {{ trigger.to_state.attributes.friendly_name }}
+          Time: {{ now().strftime('%H:%M:%S') }}
+
+# ============================================================================
+# LOW BATTERY WARNING (Optional - uncomment if needed)
+# ============================================================================
+
+# - alias: "Water Leak Sensor Low Battery"
+#   id: water_leak_low_battery
+#   description: "Alert when water leak sensor battery is low"
+#   trigger:
+#     - platform: numeric_state
+#       entity_id: sensor.sonoff_waterleak1_battery
+#       below: 20
+#       for:
+#         minutes: 5
+#   action:
+#     - service: telegram_bot.send_message
+#       data:
+#         message: |
+#           ⚠️ Low Battery
+#           
+#           {{ trigger.to_state.attributes.friendly_name }}
+#           Battery: {{ states(trigger.entity_id) }}%

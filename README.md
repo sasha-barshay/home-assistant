@@ -143,7 +143,8 @@ Backups include:
 
 - ✅ **MQTT:** Mosquitto broker configured and running
 - ✅ **SkyConnect:** Zigbee coordinator validated (firmware 7.4.4.3)
-- ⏳ **ZHA:** Ready for configuration
+- ✅ **ZHA:** Configured and operational
+- ✅ **Tuya:** Native cloud integration configured
 - ✅ **Alerting System:** Autonomous alerting with Telegram bot and mobile app notifications
 
 ### Alerting System
@@ -165,9 +166,17 @@ cd alerts
 
 See `alerts/README.md` for complete documentation.
 
+### Tuya Integration
+
+The Tuya integration is configured and ready to use:
+
+- **Status:** ✅ Configured (Native Cloud Integration)
+- **Type:** Official Tuya Integration
+- **Check Status:** Run `./check_tuya_status.sh` to see current devices and entities
+- **Configuration:** Managed via Home Assistant UI (Settings → Devices & Services)
+
 ### Planned Integrations
 
-- ZHA (Zigbee Home Automation)
 - Additional device integrations as needed
 
 ## 📚 Documentation

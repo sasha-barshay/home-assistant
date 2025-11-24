@@ -115,7 +115,7 @@
 - ✅ **Firmware Version:** Correct (7.4.4.3)
 - ✅ **Device Accessibility:** Available to Home Assistant container
 - ✅ **Configuration:** SkyConnect entry configured in Home Assistant
-- ⏳ **ZHA Integration:** Ready for configuration (not yet set up)
+- ✅ **ZHA Integration:** Configured and operational
 
 #### ZHA vs MQTT Compatibility
 - ✅ **ZHA and MQTT can coexist** - No conflicts
@@ -137,16 +137,38 @@
 - **Authentication:** Enabled (anonymous disabled)
 - **Usage:** Available for IoT devices, sensors, and other MQTT-based integrations
 
+### Tuya Integration
+- **Status:** ✅ **CONFIGURED** (Native Cloud Integration)
+- **Type:** Official Tuya Integration (cloud-based)
+- **Components Loaded:** 19 Tuya component types available
+- **Configuration:** Configured via Home Assistant UI
+- **Access:** Cloud-based via Tuya IoT Platform
+- **Device Support:** Automatic discovery of Tuya devices
+- **Status Check:** Use `./check_tuya_status.sh` to verify integration status
+
 ### Planned Integrations
-- ZHA (Zigbee Home Automation) - Ready to configure
 - Additional device integrations as needed
 
 ### Connected Devices
-- SkyConnect Zigbee Coordinator (validated, ready for ZHA setup)
+- SkyConnect Zigbee Coordinator (validated, ZHA configured)
+- Sonoff SNZB-05P Water Leak Sensor #1 (`binary_sensor.sonoff_waterleak1`)
+  - Battery: 100% (2.8V)
+  - Status: Operational
+  - Additional entities: Battery sensor, Firmware update, Identify button
 - Additional devices to be added via ZHA or MQTT
 
 ### Automations
-- To be configured after device setup
+- ✅ Water Leak Sensor Automations configured
+  - File: `water_leak_automations.yaml`
+  - Notification method: Telegram (`notify.telegram_notifier`)
+  - Automations:
+    - Basic water leak alert
+    - Alert with location details
+    - Critical areas alert (with reminders)
+    - Alert with battery status
+    - Water leak cleared notification
+  - Documentation: `WATER_LEAK_SETUP.md`
+  - Deployment script: `deploy_water_leak_automations.sh`
 
 ---
 
@@ -208,12 +230,13 @@
 
 3. **Set Up Integrations:**
    - ✅ SkyConnect validated and ready
-   - ⏳ Configure ZHA integration (Zigbee Home Automation)
-   - ⏳ Add Zigbee devices via ZHA
+   - ✅ ZHA integration configured (Zigbee Home Automation)
+   - ✅ Sonoff SNZB-05P Water Leak Sensor #1 connected
+   - ⏳ Add additional Zigbee devices via ZHA
    - ⏳ Configure additional device integrations
-   - ⏳ Document all connected devices
-   - ⏳ Set up automations
-   - ⏳ Document automation scripts
+   - ✅ Document connected devices (water leak sensor documented)
+   - ✅ Water leak sensor automations configured
+   - ✅ Automation scripts documented
 
 4. **Security Configuration:**
    - ✅ API token configured and stored securely (`.env` file, gitignored)
@@ -260,6 +283,7 @@
 **Last Updated:** December 2024
 **Status:** ✅ **INSTALLED AND OPERATIONAL** - Home Assistant running autonomously on Oslik
 **Project Status:** Active - Production ready, autonomous operation configured
-**Phase Status:** ✅ **SkyConnect Validation Complete** - Device validated, firmware verified, ready for ZHA setup
+**Phase Status:** ✅ **ZHA Configured** - Zigbee coordinator operational, water leak sensors connected
 **API Access:** ✅ **CONFIGURED** - Long-lived access token stored and verified
 **Server Access:** ✅ SSH accessible - Server reachable at 10.11.12.100
+**Water Leak Sensors:** ✅ **CONFIGURED** - Sonoff SNZB-05P sensor #1 connected, Telegram automations ready
