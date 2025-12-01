@@ -31,12 +31,17 @@ This repository contains the configuration and management scripts for a self-hos
 ├── .env                         # Environment variables (gitignored, contains API token)
 ├── PROJECT.md                  # Detailed project documentation
 ├── METHODOLOGY.md              # Problem-solving methodology
-└── alerts/                     # Alerting system (autonomous deployment)
-    ├── run_full_deployment.sh  # Master orchestration script
-    ├── auto_setup_telegram.sh  # Telegram bot setup
-    ├── discover_entities.sh    # Entity discovery
-    ├── deploy_alerts.sh        # Deployment script
-    └── *.yaml                  # Configuration files
+├── alerts/                     # Alerting system (autonomous deployment)
+│   ├── run_full_deployment.sh  # Master orchestration script
+│   ├── auto_setup_telegram.sh  # Telegram bot setup
+│   ├── discover_entities.sh    # Entity discovery
+│   ├── deploy_alerts.sh        # Deployment script
+│   └── *.yaml                  # Configuration files
+└── ztna/                       # Zero Trust Network Access (remote access)
+    ├── README.md               # ZTNA overview and quick start
+    ├── ZTNA_IMPLEMENTATION_PLAN.md  # Complete implementation plan
+    ├── ZTNA_QUICK_START.md     # Quick reference guide
+    └── install_tailscale.sh    # Automated installation script
 ```
 
 ## 🚀 Quick Start
@@ -225,6 +230,36 @@ The project includes helper scripts for interacting with the Home Assistant API:
 ./ha_api.sh help
 ```
 
+## 🌐 Remote Access (ZTNA)
+
+Secure remote access to Home Assistant and other Oslik services is available via Zero Trust Network Access (ZTNA).
+
+**Status:** 📋 Implementation plan ready
+
+**Solution:** Tailscale (recommended) - Free tier supports up to 100 devices
+
+**Quick Start:**
+```bash
+cd ztna
+./install_tailscale.sh
+```
+
+**Documentation:**
+- **Full Implementation Plan:** `ztna/ZTNA_IMPLEMENTATION_PLAN.md`
+- **Quick Start Guide:** `ztna/ZTNA_QUICK_START.md`
+- **Installation Script:** `ztna/install_tailscale.sh`
+
+**Supported Platforms:**
+- ✅ Mac
+- ✅ Windows
+- ✅ Android
+- ✅ iOS
+- ✅ Linux
+
+After setup, access Home Assistant remotely from any device:
+- `http://<oslik-tailscale-ip>:8123`
+- Or with subnet routing: `http://10.11.12.100:8123`
+
 ## 🔒 Security Notes
 
 - MQTT authentication is enabled (no anonymous access)
@@ -232,6 +267,7 @@ The project includes helper scripts for interacting with the Home Assistant API:
 - API token stored in `.env` file (gitignored, not committed)
 - Consider firewall rules for exposed ports
 - Review exposed ports before exposing to internet
+- **Remote Access:** Use ZTNA (Tailscale) for secure remote connections (see above)
 
 ## 🛠️ Maintenance
 
